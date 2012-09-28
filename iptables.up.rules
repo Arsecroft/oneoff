@@ -1,0 +1,22 @@
+*filter
+:FORWARD ACCEPT [0:0]
+:INPUT DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+# Accept all loopback traffic
+-A INPUT -i lo -j ACCEPT
+# Drop invalid/unknown/spoofed TCP sessions
+-A INPUT -p tcp ! --syn -m state --state NEW -j DROP
+# Accept new sessions
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+# Accept important ICMP types
+-A INPUT -p icmp -m icmp --icmp-type 0 -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type 3 -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type 4 -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type 11 -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type 12 -j ACCEPT
+# Accept known services
+-A INPUT -p tcp -m tcp -m multiport --dports 22,8000 -j ACCEPT
+#-A INPUT -p udp -m udp -m multiport --dports 53,5353 -j ACCEPT
+COMMIT
+
